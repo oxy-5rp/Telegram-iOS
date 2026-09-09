@@ -285,3 +285,4 @@
 "Settings.HideSponsoredMessages" = "Скрывать рекламные сообщения";
 "Settings.SaveMessageEditHistory" = "Сохранять историю изменений";
 "ContextMenu.EditHistory" = "История изменений";
+"Settings.GhostMode.DisableScreenshotNotification" = "Не сообщать о скриншотах";

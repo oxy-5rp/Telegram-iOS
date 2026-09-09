@@ -290,3 +290,4 @@
 "Settings.HideSponsoredMessages" = "Hide Sponsored Messages";
 "Settings.SaveMessageEditHistory" = "Save Message History";
 "ContextMenu.EditHistory" = "Edit History";
+"Settings.GhostMode.DisableScreenshotNotification" = "Don't Notify About Screenshots";

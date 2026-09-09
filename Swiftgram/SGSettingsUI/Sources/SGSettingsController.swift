@@ -92,6 +92,7 @@ private enum SGBoolSetting: String {
     case ghostDontReadStories
     case hideSponsoredMessages
     case saveMessageEditHistory
+    case disableScreenshotNotification
     case stickerTimestamp
     case hideRecordingButton
     case hideTabBar
@@ -177,6 +178,7 @@ private func SGControllerEntries(presentationData: PresentationData, callListSet
     entries.append(.toggle(id: id.count, section: .ghostMode, settingName: .ghostDontSendOnline, value: SGSimpleSettings.shared.ghostDontSendOnline, text: i18n("Settings.GhostMode.DontSendOnline", lang), enabled: SGSimpleSettings.shared.ghostModeEnabled))
     entries.append(.toggle(id: id.count, section: .ghostMode, settingName: .ghostDontSendTyping, value: SGSimpleSettings.shared.ghostDontSendTyping, text: i18n("Settings.GhostMode.DontSendTyping", lang), enabled: SGSimpleSettings.shared.ghostModeEnabled))
     entries.append(.toggle(id: id.count, section: .ghostMode, settingName: .ghostDontReadStories, value: SGSimpleSettings.shared.ghostDontReadStories, text: i18n("Settings.GhostMode.DontReadStories", lang), enabled: SGSimpleSettings.shared.ghostModeEnabled))
+    entries.append(.toggle(id: id.count, section: .ghostMode, settingName: .disableScreenshotNotification, value: SGSimpleSettings.shared.disableScreenshotNotification, text: i18n("Settings.GhostMode.DisableScreenshotNotification", lang), enabled: true))
     entries.append(.notice(id: id.count, section: .ghostMode, text: i18n("Settings.GhostMode.Notice", lang)))
     
     if appConfiguration.sgWebSettings.global.canEditSettings {
@@ -458,6 +460,8 @@ public func sgSettingsController(context: AccountContext/*, focusOnItemTag: Int?
             SGSimpleSettings.shared.hideSponsoredMessages = value
         case .saveMessageEditHistory:
             SGSimpleSettings.shared.saveMessageEditHistory = value
+        case .disableScreenshotNotification:
+            SGSimpleSettings.shared.disableScreenshotNotification = value
         case .showRepostToStory:
             SGSimpleSettings.shared.showRepostToStoryV2 = value
         case .contextShowSelectFromUser:
