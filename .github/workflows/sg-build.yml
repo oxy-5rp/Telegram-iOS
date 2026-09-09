@@ -83,14 +83,24 @@ jobs:
       - name: Collect artifacts
         if: success()
         run: |
-          set -eux
+          set -eu
           cd /Users/Shared/telegram-ios
           OUTPUT_PATH="build/artifacts"
           rm -rf "$OUTPUT_PATH"
           mkdir -p "$OUTPUT_PATH"
-          for f in bazel-out/applebin_ios-ios_arm*-opt-ST-*/bin/Telegram/Telegram.ipa; do
-            cp "$f" "$OUTPUT_PATH/"
-          done
+          # bazel-bin is a symlink into the bazel output base, and the output
+          # config directory name is not stable, so resolve the ipa rather than
+          # globbing a hardcoded bazel-out path.
+          IPA="bazel-bin/Telegram/Telegram.ipa"
+          if [ ! -f "$IPA" ]; then
+            IPA="$(find -L bazel-out -maxdepth 6 -name Telegram.ipa -type f 2>/dev/null | head -n 1)"
+          fi
+          if [ -z "$IPA" ] || [ ! -f "$IPA" ]; then
+            echo "Telegram.ipa not found"
+            find -L bazel-bin -maxdepth 2 -name '*.ipa' 2>/dev/null || true
+            exit 1
+          fi
+          cp -L "$IPA" "$OUTPUT_PATH/Telegram.ipa"
           ls -la "$OUTPUT_PATH"
 
       - name: Upload IPA
