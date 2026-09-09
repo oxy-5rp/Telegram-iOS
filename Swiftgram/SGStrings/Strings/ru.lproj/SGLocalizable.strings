@@ -282,3 +282,6 @@
 "Settings.GhostMode.DontSendTyping" = "Не отправлять статус «печатает»";
 "Settings.GhostMode.DontReadStories" = "Не отмечать истории просмотренными";
 "Settings.GhostMode.Notice" = "При включённом режиме призрака чаты по-прежнему помечаются прочитанными локально, но сервер об этом не узнаёт. Отправка сообщения или реакция всё равно переводит вас в онлайн.";
+"Settings.HideSponsoredMessages" = "Скрывать рекламные сообщения";
+"Settings.SaveMessageEditHistory" = "Сохранять историю изменений";
+"ContextMenu.EditHistory" = "История изменений";

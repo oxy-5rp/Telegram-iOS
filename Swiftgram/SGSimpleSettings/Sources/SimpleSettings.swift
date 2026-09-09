@@ -76,6 +76,8 @@ public class SGSimpleSettings {
             { let _ = self.ghostDontSendOnline },
             { let _ = self.ghostDontSendTyping },
             { let _ = self.ghostDontReadStories },
+            { let _ = self.hideSponsoredMessages },
+            { let _ = self.saveMessageEditHistory },
             { let _ = self.startTelescopeWithRearCam },
             { let _ = self.hideRecordingButton },
             { let _ = self.inputToolbar },
@@ -144,6 +146,8 @@ public class SGSimpleSettings {
         case ghostDontSendOnline
         case ghostDontSendTyping
         case ghostDontReadStories
+        case hideSponsoredMessages
+        case saveMessageEditHistory
         case stickerSize
         case stickerTimestamp
         case hideRecordingButton
@@ -308,6 +312,8 @@ public class SGSimpleSettings {
         Keys.ghostDontSendOnline.rawValue: true,
         Keys.ghostDontSendTyping.rawValue: true,
         Keys.ghostDontReadStories.rawValue: true,
+        Keys.hideSponsoredMessages.rawValue: false,
+        Keys.saveMessageEditHistory.rawValue: false,
         Keys.stickerSize.rawValue: 100,
         Keys.stickerTimestamp.rawValue: true,
         Keys.hideRecordingButton.rawValue: false,
@@ -502,6 +508,12 @@ public class SGSimpleSettings {
 
     @UserDefault(key: Keys.ghostDontReadStories.rawValue)
     public var ghostDontReadStories: Bool
+
+    @UserDefault(key: Keys.hideSponsoredMessages.rawValue)
+    public var hideSponsoredMessages: Bool
+
+    @UserDefault(key: Keys.saveMessageEditHistory.rawValue)
+    public var saveMessageEditHistory: Bool
 
     /// Effective Ghost Mode switches. Every sub-option only applies while the
     /// master toggle is on, so turning Ghost Mode off restores stock behaviour

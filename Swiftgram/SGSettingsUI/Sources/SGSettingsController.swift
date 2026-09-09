@@ -90,6 +90,8 @@ private enum SGBoolSetting: String {
     case ghostDontSendOnline
     case ghostDontSendTyping
     case ghostDontReadStories
+    case hideSponsoredMessages
+    case saveMessageEditHistory
     case stickerTimestamp
     case hideRecordingButton
     case hideTabBar
@@ -329,6 +331,8 @@ private func SGControllerEntries(presentationData: PresentationData, callListSet
     entries.append(.toggle(id: id.count, section: .other, settingName: .hideRecordingButton, value: !SGSimpleSettings.shared.hideRecordingButton, text: i18n("Settings.RecordingButton", lang), enabled: true))
     entries.append(.toggle(id: id.count, section: .other, settingName: .disableSnapDeletionEffect, value: !SGSimpleSettings.shared.disableSnapDeletionEffect, text: i18n("Settings.SnapDeletionEffect", lang), enabled: true))
     entries.append(.toggle(id: id.count, section: .other, settingName: .keepDeletedMessages, value: SGSimpleSettings.shared.keepDeletedMessages, text: i18n("Settings.KeepDeletedMessages", lang), enabled: true))
+    entries.append(.toggle(id: id.count, section: .other, settingName: .hideSponsoredMessages, value: SGSimpleSettings.shared.hideSponsoredMessages, text: i18n("Settings.HideSponsoredMessages", lang), enabled: true))
+    entries.append(.toggle(id: id.count, section: .other, settingName: .saveMessageEditHistory, value: SGSimpleSettings.shared.saveMessageEditHistory, text: i18n("Settings.SaveMessageEditHistory", lang), enabled: true))
     entries.append(.notice(id: id.count, section: .other, text: i18n("Settings.KeepDeletedMessages.Notice", lang)))
     entries.append(.toggle(id: id.count, section: .other, settingName: .disableSendAsButton, value: !SGSimpleSettings.shared.disableSendAsButton, text: i18n("Settings.SendAsButton", lang, strings.Conversation_SendMesageAs), enabled: true))
     entries.append(.toggle(id: id.count, section: .other, settingName: .disableGalleryCamera, value: !SGSimpleSettings.shared.disableGalleryCamera, text: i18n("Settings.GalleryCamera", lang), enabled: true))
@@ -450,6 +454,10 @@ public func sgSettingsController(context: AccountContext/*, focusOnItemTag: Int?
             SGSimpleSettings.shared.ghostDontSendTyping = value
         case .ghostDontReadStories:
             SGSimpleSettings.shared.ghostDontReadStories = value
+        case .hideSponsoredMessages:
+            SGSimpleSettings.shared.hideSponsoredMessages = value
+        case .saveMessageEditHistory:
+            SGSimpleSettings.shared.saveMessageEditHistory = value
         case .showRepostToStory:
             SGSimpleSettings.shared.showRepostToStoryV2 = value
         case .contextShowSelectFromUser:

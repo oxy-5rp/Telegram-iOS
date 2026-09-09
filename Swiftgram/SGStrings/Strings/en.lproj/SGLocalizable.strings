@@ -287,3 +287,6 @@
 "Settings.GhostMode.DontSendTyping" = "Don't Send Typing Status";
 "Settings.GhostMode.DontReadStories" = "Don't Mark Stories as Seen";
 "Settings.GhostMode.Notice" = "While Ghost Mode is on, chats are still marked as read for you, but the server is never told. Sending a message or reacting still puts you online.";
+"Settings.HideSponsoredMessages" = "Hide Sponsored Messages";
+"Settings.SaveMessageEditHistory" = "Save Message History";
+"ContextMenu.EditHistory" = "Edit History";

@@ -4558,6 +4558,12 @@ func replayFinalState(
                         updatedMedia = previousMessage.media
                     }
                     
+                    // MARK: Swiftgram
+                    if let revisions = sgAppendEditRevision(previousMessage: previousMessage, updatedText: message.text) {
+                        updatedAttributes.removeAll(where: { $0 is SGMessageEditHistoryAttribute })
+                        updatedAttributes.append(SGMessageEditHistoryAttribute(revisions: revisions))
+                    }
+                    
                     return .update(message.withUpdatedLocalTags(updatedLocalTags).withUpdatedFlags(updatedFlags).withUpdatedAttributes(updatedAttributes).withUpdatedMedia(updatedMedia))
                 })
                 if let generatedEvent = generatedEvent {

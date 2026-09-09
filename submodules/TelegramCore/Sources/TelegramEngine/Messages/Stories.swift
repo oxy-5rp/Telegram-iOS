@@ -2,6 +2,7 @@ import Foundation
 import SwiftSignalKit
 import Postbox
 import TelegramApi
+import SGSimpleSettings
 
 public enum EngineStoryInputMedia {
     case image(dimensions: PixelDimensions, data: Data, stickers: [TelegramMediaFile])
@@ -2085,6 +2086,11 @@ func _internal_markStoryAsSeen(account: Account, peerId: PeerId, id: Int32, asPi
                 return .complete()
             }
             #endif
+            
+            // MARK: Swiftgram
+            if SGSimpleSettings.shared.isGhostDontReadStories {
+                return .complete()
+            }
             
             return account.network.request(Api.functions.stories.incrementStoryViews(peer: inputPeer, id: [id]))
             |> `catch` { _ -> Signal<Api.Bool, NoError> in

@@ -2,6 +2,7 @@ import Foundation
 import Postbox
 import SwiftSignalKit
 import TelegramApi
+import SGSimpleSettings
 
 private class AdMessagesHistoryContextImpl {
     final class CachedMessage: Equatable, Codable {
@@ -491,7 +492,8 @@ private class AdMessagesHistoryContextImpl {
             return transaction.getPeer(peerId).flatMap(apiInputPeer)
         }
         |> mapToSignal { inputPeer -> Signal<(interPostInterval: Int32?, startDelay: Int32?, betweenDelay: Int32?, messages: [Message]), NoError> in
-            guard let inputPeer else {
+            // MARK: Swiftgram
+            guard let inputPeer, !SGSimpleSettings.shared.hideSponsoredMessages else {
                 return .single((nil, nil, nil, []))
             }
             var flags: Int32 = 0

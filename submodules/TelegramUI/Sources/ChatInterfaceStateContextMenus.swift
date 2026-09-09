@@ -1579,6 +1579,16 @@ func contextMenuForChatPresentationInterfaceState(chatPresentationInterfaceState
         } else {
             sgActions.append(showJsonAction)
         }
+
+        // MARK: Swiftgram
+        if !message.sgEditRevisions.isEmpty {
+            sgActions.append(.action(ContextMenuActionItem(text: i18n("ContextMenu.EditHistory", chatPresentationInterfaceState.strings.baseLanguageCode), icon: { theme in
+                return generateTintedImage(image: UIImage(bundleImageName: "Chat/Context Menu/Timer"), color: theme.actionSheet.primaryTextColor)
+            }, action: { _, f in
+                showMessageEditHistory(controllerInteraction: controllerInteraction, chatPresentationInterfaceState: chatPresentationInterfaceState, message: message, context: context)
+                f(.default)
+            })))
+        }
         
         var threadId: Int64?
         var threadMessageCount: Int = 0

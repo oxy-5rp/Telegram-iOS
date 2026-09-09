@@ -79,3 +79,35 @@ func sgRetainDeletedMessages(transaction: Transaction, ids: [MessageId]) -> Set<
 
     return retained
 }
+
+public var sgSaveMessageEditHistoryEnabled: Bool {
+    return SGSimpleSettings.shared.saveMessageEditHistory
+}
+
+/// Called while an incoming edit is being applied. Returns the revision list to
+/// store on the updated message, or nil when nothing should change (feature off,
+/// text unchanged, or the previous version is already recorded).
+func sgAppendEditRevision(previousMessage: Message, updatedText: String) -> [SGMessageRevision]? {
+    guard sgSaveMessageEditHistoryEnabled else {
+        return nil
+    }
+    guard previousMessage.id.namespace == Namespaces.Message.Cloud else {
+        return nil
+    }
+    guard previousMessage.text != updatedText else {
+        return nil
+    }
+    guard !previousMessage.text.isEmpty else {
+        return nil
+    }
+
+    var revisions = previousMessage.sgEditRevisions
+    if let last = revisions.last, last.text == previousMessage.text {
+        return nil
+    }
+    revisions.append(SGMessageRevision(text: previousMessage.text, date: previousMessage.editedTime ?? previousMessage.timestamp))
+    if revisions.count > SGMessageEditHistoryAttribute.maximumRevisionCount {
+        revisions.removeFirst(revisions.count - SGMessageEditHistoryAttribute.maximumRevisionCount)
+    }
+    return revisions
+}
