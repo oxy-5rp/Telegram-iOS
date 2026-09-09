@@ -131,6 +131,8 @@
 /* "Send Message As..." button */
 "Settings.SendAsButton" = "Кнопка \"%@\"";
 "Settings.SnapDeletionEffect" = "Эффекты удаления сообщений";
+"Settings.KeepDeletedMessages" = "Сохранять удалённые сообщения";
+"Settings.KeepDeletedMessages.Notice" = "Удалённые собеседниками сообщения остаются в чате и помечаются значком 🗑.";
 
 "Settings.Stickers.Size" = "РАЗМЕР";
 "Settings.Stickers.Timestamp" = "Показывать время";

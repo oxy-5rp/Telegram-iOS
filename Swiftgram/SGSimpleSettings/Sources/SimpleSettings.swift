@@ -70,6 +70,7 @@ public class SGSimpleSettings {
             { let _ = self.disableGalleryCamera },
             { let _ = self.disableSendAsButton },
             { let _ = self.disableSnapDeletionEffect },
+            { let _ = self.keepDeletedMessages },
             { let _ = self.startTelescopeWithRearCam },
             { let _ = self.hideRecordingButton },
             { let _ = self.inputToolbar },
@@ -132,6 +133,7 @@ public class SGSimpleSettings {
         case disableGalleryCameraPreview
         case disableSendAsButton
         case disableSnapDeletionEffect
+        case keepDeletedMessages
         case stickerSize
         case stickerTimestamp
         case hideRecordingButton
@@ -290,6 +292,7 @@ public class SGSimpleSettings {
         Keys.disableGalleryCameraPreview.rawValue: false,
         Keys.disableSendAsButton.rawValue: false,
         Keys.disableSnapDeletionEffect.rawValue: false,
+        Keys.keepDeletedMessages.rawValue: false,
         Keys.stickerSize.rawValue: 100,
         Keys.stickerTimestamp.rawValue: true,
         Keys.hideRecordingButton.rawValue: false,
@@ -466,6 +469,9 @@ public class SGSimpleSettings {
 
     @UserDefault(key: Keys.disableSnapDeletionEffect.rawValue)
     public var disableSnapDeletionEffect: Bool
+
+    @UserDefault(key: Keys.keepDeletedMessages.rawValue)
+    public var keepDeletedMessages: Bool
     
     @UserDefault(key: Keys.stickerSize.rawValue)
     public var stickerSize: Int32

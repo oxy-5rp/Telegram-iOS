@@ -7,6 +7,11 @@ import TextFormat
 import LocalizedPeerData
 import AccountContext
 
+// MARK: Swiftgram
+/// Marker prepended to the status line of a message that was deleted remotely
+/// but kept locally by the "Keep Deleted Messages" mod.
+public let sgDeletedMessageMarker: String = "🗑️"
+
 public enum MessageTimestampStatusFormat {
     case full
     case regular
@@ -246,6 +251,11 @@ public func stringForMessageTimestampStatus(
         if let authorTitle = authorTitle, !authorTitle.isEmpty {
             dateText = "\(authorTitle), \(dateText)"
         }
+    }
+    
+    // MARK: Swiftgram
+    if message.sgIsDeleted {
+        dateText = "\(sgDeletedMessageMarker) \(dateText)"
     }
     
     return dateText

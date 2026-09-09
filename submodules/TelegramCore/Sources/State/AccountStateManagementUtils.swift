@@ -4441,18 +4441,44 @@ func replayFinalState(
                 }
             case let .DeleteMessagesWithGlobalIds(ids):
                 var resourceIds: [MediaResourceId] = []
-                transaction.deleteMessagesWithGlobalIds(ids, forEachMedia: { media in
-                    addMessageMediaResourceIdsToRemove(media: media, resourceIds: &resourceIds)
-                })
+                // MARK: Swiftgram
+                var retainedGlobalIds = Set<Int32>()
+                if sgKeepDeletedMessagesEnabled {
+                    var resolvedIds: [(Int32, MessageId)] = []
+                    for globalId in ids {
+                        for messageId in transaction.messageIdsForGlobalIds([globalId]) {
+                            resolvedIds.append((globalId, messageId))
+                        }
+                    }
+                    let retained = sgRetainDeletedMessages(transaction: transaction, ids: resolvedIds.map { $0.1 })
+                    var messageIdsToDelete: [MessageId] = []
+                    for (globalId, messageId) in resolvedIds {
+                        if retained.contains(messageId) {
+                            retainedGlobalIds.insert(globalId)
+                        } else {
+                            messageIdsToDelete.append(messageId)
+                        }
+                    }
+                    transaction.deleteMessages(messageIdsToDelete, forEachMedia: { media in
+                        addMessageMediaResourceIdsToRemove(media: media, resourceIds: &resourceIds)
+                    })
+                } else {
+                    transaction.deleteMessagesWithGlobalIds(ids, forEachMedia: { media in
+                        addMessageMediaResourceIdsToRemove(media: media, resourceIds: &resourceIds)
+                    })
+                }
                 if !resourceIds.isEmpty {
                     let _ = mediaBox.removeCachedResources(Array(Set(resourceIds)), force: true).start()
                 }
-                deletedMessageIds.append(contentsOf: ids.map { .global($0) })
+                deletedMessageIds.append(contentsOf: ids.filter({ !retainedGlobalIds.contains($0) }).map { .global($0) })
             case let .DeleteMessages(ids):
-                _internal_deleteMessages(transaction: transaction, mediaBox: mediaBox, ids: ids, manualAddMessageThreadStatsDifference: { id, add, remove in
+                // MARK: Swiftgram
+                let retainedIds = sgRetainDeletedMessages(transaction: transaction, ids: ids)
+                let idsToDelete = retainedIds.isEmpty ? ids : ids.filter({ !retainedIds.contains($0) })
+                _internal_deleteMessages(transaction: transaction, mediaBox: mediaBox, ids: idsToDelete, manualAddMessageThreadStatsDifference: { id, add, remove in
                     addMessageThreadStatsDifference(threadKey: id, remove: remove, addedMessagePeer: nil, addedMessageId: nil, isOutgoing: false)
                 })
-                deletedMessageIds.append(contentsOf: ids.map { .messageId($0) })
+                deletedMessageIds.append(contentsOf: idsToDelete.map { .messageId($0) })
             case let .UpdateMinAvailableMessage(id):
                 if let message = transaction.getMessage(id) {
                     updatePeerChatInclusionWithMinTimestamp(transaction: transaction, id: id.peerId, minTimestamp: message.timestamp, forceRootGroupIfNotExists: false)

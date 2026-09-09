@@ -136,6 +136,8 @@
 /* "Send Message As..." button */
 "Settings.SendAsButton" = "\"%@\" Button";
 "Settings.SnapDeletionEffect" = "Message Deletion Effects";
+"Settings.KeepDeletedMessages" = "Keep Deleted Messages";
+"Settings.KeepDeletedMessages.Notice" = "Messages deleted by other people stay in the chat and are marked with a 🗑 icon.";
 
 "Settings.Stickers.Size" = "SIZE";
 "Settings.Stickers.Timestamp" = "Show Timestamp";
