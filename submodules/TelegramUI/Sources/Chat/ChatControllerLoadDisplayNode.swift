@@ -1,3 +1,6 @@
+// MARK: Swiftgram
+import SGSimpleSettings
+
 import Foundation
 import UIKit
 import Postbox
@@ -414,7 +417,8 @@ extension ChatControllerImpl {
             presentationInterfaceState = presentationInterfaceState.updatedHasScheduledMessages(contentData.state.hasScheduledMessages)
             presentationInterfaceState = presentationInterfaceState.updatedAutoremoveTimeout(contentData.state.autoremoveTimeout)
             presentationInterfaceState = presentationInterfaceState.updatedCurrentSendAsPeerId(contentData.state.currentSendAsPeerId)
-            presentationInterfaceState = presentationInterfaceState.updatedCopyProtectionEnabled(contentData.state.copyProtectionEnabled)
+            // MARK: Swiftgram
+            presentationInterfaceState = presentationInterfaceState.updatedCopyProtectionEnabled(SGSimpleSettings.shared.disableCopyProtection ? false : contentData.state.copyProtectionEnabled)
             presentationInterfaceState = presentationInterfaceState.updatedMyCopyProtectionEnabled(contentData.state.myCopyProtectionEnabled)
             presentationInterfaceState = presentationInterfaceState.updatedHasSearchTags(contentData.state.hasSearchTags)
             presentationInterfaceState = presentationInterfaceState.updatedIsPremiumRequiredForMessaging(contentData.state.isPremiumRequiredForMessaging)

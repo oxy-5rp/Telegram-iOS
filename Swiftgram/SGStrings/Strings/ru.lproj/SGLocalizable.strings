@@ -286,3 +286,4 @@
 "Settings.SaveMessageEditHistory" = "Сохранять историю изменений";
 "ContextMenu.EditHistory" = "История изменений";
 "Settings.GhostMode.DisableScreenshotNotification" = "Не сообщать о скриншотах";
+"Settings.DisableCopyProtection" = "Игнорировать запрет пересылки";
