@@ -28,6 +28,7 @@ import UndoUI
 private enum SGControllerSection: Int32, SGItemListSection {
     case search
     case trending
+    case ghostMode
     case content
     case tabs
     case folders
@@ -84,6 +85,11 @@ private enum SGBoolSetting: String {
     case disableSendAsButton
     case disableSnapDeletionEffect
     case keepDeletedMessages
+    case ghostModeEnabled
+    case ghostDontReadMessages
+    case ghostDontSendOnline
+    case ghostDontSendTyping
+    case ghostDontReadStories
     case stickerTimestamp
     case hideRecordingButton
     case hideTabBar
@@ -162,6 +168,14 @@ private func SGControllerEntries(presentationData: PresentationData, callListSet
     } else {
         id.increment(3)
     }
+    
+    entries.append(.header(id: id.count, section: .ghostMode, text: i18n("Settings.GhostMode.Header", lang), badge: nil))
+    entries.append(.toggle(id: id.count, section: .ghostMode, settingName: .ghostModeEnabled, value: SGSimpleSettings.shared.ghostModeEnabled, text: i18n("Settings.GhostMode", lang), enabled: true))
+    entries.append(.toggle(id: id.count, section: .ghostMode, settingName: .ghostDontReadMessages, value: SGSimpleSettings.shared.ghostDontReadMessages, text: i18n("Settings.GhostMode.DontReadMessages", lang), enabled: SGSimpleSettings.shared.ghostModeEnabled))
+    entries.append(.toggle(id: id.count, section: .ghostMode, settingName: .ghostDontSendOnline, value: SGSimpleSettings.shared.ghostDontSendOnline, text: i18n("Settings.GhostMode.DontSendOnline", lang), enabled: SGSimpleSettings.shared.ghostModeEnabled))
+    entries.append(.toggle(id: id.count, section: .ghostMode, settingName: .ghostDontSendTyping, value: SGSimpleSettings.shared.ghostDontSendTyping, text: i18n("Settings.GhostMode.DontSendTyping", lang), enabled: SGSimpleSettings.shared.ghostModeEnabled))
+    entries.append(.toggle(id: id.count, section: .ghostMode, settingName: .ghostDontReadStories, value: SGSimpleSettings.shared.ghostDontReadStories, text: i18n("Settings.GhostMode.DontReadStories", lang), enabled: SGSimpleSettings.shared.ghostModeEnabled))
+    entries.append(.notice(id: id.count, section: .ghostMode, text: i18n("Settings.GhostMode.Notice", lang)))
     
     if appConfiguration.sgWebSettings.global.canEditSettings {
         entries.append(.disclosure(id: id.count, section: .content, link: .contentSettings, text: i18n("Settings.ContentSettings", lang)))
@@ -425,6 +439,17 @@ public func sgSettingsController(context: AccountContext/*, focusOnItemTag: Int?
             SGSimpleSettings.shared.hideReactions = value
         case .keepDeletedMessages:
             SGSimpleSettings.shared.keepDeletedMessages = value
+        case .ghostModeEnabled:
+            SGSimpleSettings.shared.ghostModeEnabled = value
+            simplePromise.set(true) // Trigger update for 'enabled' field of the sub-toggles
+        case .ghostDontReadMessages:
+            SGSimpleSettings.shared.ghostDontReadMessages = value
+        case .ghostDontSendOnline:
+            SGSimpleSettings.shared.ghostDontSendOnline = value
+        case .ghostDontSendTyping:
+            SGSimpleSettings.shared.ghostDontSendTyping = value
+        case .ghostDontReadStories:
+            SGSimpleSettings.shared.ghostDontReadStories = value
         case .showRepostToStory:
             SGSimpleSettings.shared.showRepostToStoryV2 = value
         case .contextShowSelectFromUser:

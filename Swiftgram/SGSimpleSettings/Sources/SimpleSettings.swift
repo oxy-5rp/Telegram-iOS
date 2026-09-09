@@ -71,6 +71,11 @@ public class SGSimpleSettings {
             { let _ = self.disableSendAsButton },
             { let _ = self.disableSnapDeletionEffect },
             { let _ = self.keepDeletedMessages },
+            { let _ = self.ghostModeEnabled },
+            { let _ = self.ghostDontReadMessages },
+            { let _ = self.ghostDontSendOnline },
+            { let _ = self.ghostDontSendTyping },
+            { let _ = self.ghostDontReadStories },
             { let _ = self.startTelescopeWithRearCam },
             { let _ = self.hideRecordingButton },
             { let _ = self.inputToolbar },
@@ -134,6 +139,11 @@ public class SGSimpleSettings {
         case disableSendAsButton
         case disableSnapDeletionEffect
         case keepDeletedMessages
+        case ghostModeEnabled
+        case ghostDontReadMessages
+        case ghostDontSendOnline
+        case ghostDontSendTyping
+        case ghostDontReadStories
         case stickerSize
         case stickerTimestamp
         case hideRecordingButton
@@ -293,6 +303,11 @@ public class SGSimpleSettings {
         Keys.disableSendAsButton.rawValue: false,
         Keys.disableSnapDeletionEffect.rawValue: false,
         Keys.keepDeletedMessages.rawValue: false,
+        Keys.ghostModeEnabled.rawValue: false,
+        Keys.ghostDontReadMessages.rawValue: true,
+        Keys.ghostDontSendOnline.rawValue: true,
+        Keys.ghostDontSendTyping.rawValue: true,
+        Keys.ghostDontReadStories.rawValue: true,
         Keys.stickerSize.rawValue: 100,
         Keys.stickerTimestamp.rawValue: true,
         Keys.hideRecordingButton.rawValue: false,
@@ -472,6 +487,40 @@ public class SGSimpleSettings {
 
     @UserDefault(key: Keys.keepDeletedMessages.rawValue)
     public var keepDeletedMessages: Bool
+
+    @UserDefault(key: Keys.ghostModeEnabled.rawValue)
+    public var ghostModeEnabled: Bool
+
+    @UserDefault(key: Keys.ghostDontReadMessages.rawValue)
+    public var ghostDontReadMessages: Bool
+
+    @UserDefault(key: Keys.ghostDontSendOnline.rawValue)
+    public var ghostDontSendOnline: Bool
+
+    @UserDefault(key: Keys.ghostDontSendTyping.rawValue)
+    public var ghostDontSendTyping: Bool
+
+    @UserDefault(key: Keys.ghostDontReadStories.rawValue)
+    public var ghostDontReadStories: Bool
+
+    /// Effective Ghost Mode switches. Every sub-option only applies while the
+    /// master toggle is on, so turning Ghost Mode off restores stock behaviour
+    /// without touching the individual toggles.
+    public var isGhostDontReadMessages: Bool {
+        return self.ghostModeEnabled && self.ghostDontReadMessages
+    }
+
+    public var isGhostDontSendOnline: Bool {
+        return self.ghostModeEnabled && self.ghostDontSendOnline
+    }
+
+    public var isGhostDontSendTyping: Bool {
+        return self.ghostModeEnabled && self.ghostDontSendTyping
+    }
+
+    public var isGhostDontReadStories: Bool {
+        return self.ghostModeEnabled && self.ghostDontReadStories
+    }
     
     @UserDefault(key: Keys.stickerSize.rawValue)
     public var stickerSize: Int32

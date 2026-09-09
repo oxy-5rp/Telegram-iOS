@@ -274,3 +274,11 @@
 "Settings.NY.Style.snow" = "Снег";
 "Settings.NY.Style.lightning" = "Молнии";
 "Settings.NY.Notice" = "Доступны только на ограниченное время!";
+
+"Settings.GhostMode.Header" = "РЕЖИМ ПРИЗРАКА";
+"Settings.GhostMode" = "Режим призрака";
+"Settings.GhostMode.DontReadMessages" = "Не отправлять отметки о прочтении";
+"Settings.GhostMode.DontSendOnline" = "Не отправлять статус «в сети»";
+"Settings.GhostMode.DontSendTyping" = "Не отправлять статус «печатает»";
+"Settings.GhostMode.DontReadStories" = "Не отмечать истории просмотренными";
+"Settings.GhostMode.Notice" = "При включённом режиме призрака чаты по-прежнему помечаются прочитанными локально, но сервер об этом не узнаёт. Отправка сообщения или реакция всё равно переводит вас в онлайн.";

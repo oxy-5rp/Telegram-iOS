@@ -279,3 +279,11 @@
 "Settings.NY.Style.snow" = "Snow";
 "Settings.NY.Style.lightning" = "Lightning";
 "Settings.NY.Notice" = "Available for a limited time only!";
+
+"Settings.GhostMode.Header" = "GHOST MODE";
+"Settings.GhostMode" = "Ghost Mode";
+"Settings.GhostMode.DontReadMessages" = "Don't Send Read Receipts";
+"Settings.GhostMode.DontSendOnline" = "Don't Send Online Status";
+"Settings.GhostMode.DontSendTyping" = "Don't Send Typing Status";
+"Settings.GhostMode.DontReadStories" = "Don't Mark Stories as Seen";
+"Settings.GhostMode.Notice" = "While Ghost Mode is on, chats are still marked as read for you, but the server is never told. Sending a message or reacting still puts you online.";
