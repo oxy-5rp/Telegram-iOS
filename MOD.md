@@ -57,6 +57,22 @@ entry that renders every version, plus the current text, as a text document.
 - `submodules/TelegramCore/Sources/SyncCore/SyncCore_SGMessageEditHistoryAttribute.swift`
 - `submodules/TelegramUI/Sources/SGMessageEditHistory.swift`
 
+## Don't Notify About Screenshots
+
+Settings ▸ Ghost Mode ▸ *Don't Notify About Screenshots*
+
+Taking a screenshot of a secret chat or of self-destructing media no longer
+posts the "took a screenshot" service message. Hooked at
+`_internal_addSecretChatMessageScreenshot`, which all three call sites funnel
+through, plus the secret media preview's own cloud-chat branch.
+
+## Ignore Copy Protection
+
+Settings ▸ Other ▸ *Ignore Copy Protection*
+
+Chats with forwarding/saving restricted behave like unrestricted ones locally:
+`Message.isCopyProtected()` and the chat-level flag both report false.
+
 ## Hide Sponsored Messages
 
 Settings ▸ Other ▸ *Hide Sponsored Messages* — short-circuits
