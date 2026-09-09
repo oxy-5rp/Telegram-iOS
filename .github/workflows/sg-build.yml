@@ -88,27 +88,27 @@ jobs:
           OUTPUT_PATH="build/artifacts"
           rm -rf "$OUTPUT_PATH"
           mkdir -p "$OUTPUT_PATH"
-          # bazel-bin is a symlink into the bazel output base, and the output
-          # config directory name is not stable, so resolve the ipa rather than
-          # globbing a hardcoded bazel-out path.
-          IPA="bazel-bin/Telegram/Telegram.ipa"
-          if [ ! -f "$IPA" ]; then
-            IPA="$(find -L bazel-out -maxdepth 6 -name Telegram.ipa -type f 2>/dev/null | head -n 1)"
+          # bazel-bin is a symlink into the bazel output base and the ipa is
+          # named after the app (Swiftgram.ipa here), so match on the extension
+          # rather than a fixed path or filename.
+          IPA="$(find -L bazel-bin/Telegram -maxdepth 1 -name '*.ipa' -type f 2>/dev/null | head -n 1)"
+          if [ -z "$IPA" ]; then
+            IPA="$(find -L bazel-out -maxdepth 6 -name '*.ipa' -type f 2>/dev/null | head -n 1)"
           fi
-          if [ -z "$IPA" ] || [ ! -f "$IPA" ]; then
-            echo "Telegram.ipa not found"
-            find -L bazel-bin -maxdepth 2 -name '*.ipa' 2>/dev/null || true
+          if [ -z "$IPA" ]; then
+            echo "no ipa produced"
             exit 1
           fi
-          cp -L "$IPA" "$OUTPUT_PATH/Telegram.ipa"
+          echo "collected $IPA"
+          cp -L "$IPA" "$OUTPUT_PATH/"
           ls -la "$OUTPUT_PATH"
 
       - name: Upload IPA
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: Telegram-ipa-${{ env.BUILD_NUMBER }}
-          path: /Users/Shared/telegram-ios/build/artifacts/Telegram.ipa
+          name: Swiftgram-ipa-${{ env.BUILD_NUMBER }}
+          path: /Users/Shared/telegram-ios/build/artifacts/*.ipa
           if-no-files-found: error
           retention-days: 14
 
