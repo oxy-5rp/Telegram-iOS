@@ -77,6 +77,9 @@ jobs:
           mv "/Users/Shared/$(basename "$GITHUB_WORKSPACE")" /Users/Shared/telegram-ios
 
       - name: Build the app
+        env:
+          TG_API_ID: ${{ secrets.TG_API_ID }}
+          TG_API_HASH: ${{ secrets.TG_API_HASH }}
         run: |
           set -eux
 
@@ -84,6 +87,19 @@ jobs:
           BAZEL_USER_ROOT="/private/var/tmp/_bazel_containerhost"
 
           cd "$SOURCE_DIR"
+
+          # Telegram demands an APNs-push integrity check from official api_ids,
+          # and a sideloaded build has no push entitlement to answer it with, so
+          # auth.sendCode just times out. Third-party api_ids are not asked.
+          # Kept in repository secrets: an api_hash does not belong in git.
+          set +x
+          if [ -n "${TG_API_ID:-}" ] && [ -n "${TG_API_HASH:-}" ]; then
+            python3 -c "import json,os;p=os.environ['SG_CONFIGURATION'];c=json.load(open(p));c['api_id']=os.environ['TG_API_ID'];c['api_hash']=os.environ['TG_API_HASH'];json.dump(c,open(p,'w'),indent=1)"
+            echo "Building with the repository's own api credentials"
+          else
+            echo "TG_API_ID/TG_API_HASH are not set; building with the configuration defaults"
+          fi
+          set -x
 
           BUILD_NUMBER_OFFSET="$(cat build_number_offset)"
           APP_VERSION=$(python3 -c 'import json;print(json.load(open("versions.json"))["app"])')
