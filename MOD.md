@@ -166,6 +166,18 @@ fake provisioning profiles are issued for it and the build will not sign
 anything else. To keep a test build alongside the normal one, change the bundle
 id in Sideloadly at signing time.
 
+### Logging into a test datacenter
+
+Real phone numbers do not exist on the test servers. Per
+[Telegram's auth docs](https://core.telegram.org/api/auth#test-accounts), sign in
+with a number shaped `99966XYYYY`, where `X` is the DC number (1-3) and `YYYY` is
+anything; the confirmation code is `X` repeated five times, so `99966 2 1234`
+takes the code `22222`. If a number hits a flood limit, change the `YYYY` part.
+
+Everything there is disposable: anyone can sign in as any test number, and
+Telegram wipes the test datacenters periodically. Do not put anything real in
+them.
+
 ## Building
 
 CI: `.github/workflows/sg-build.yml` builds `release_arm64` on a macOS runner
