@@ -20,6 +20,7 @@ swift_library(
         "//submodules/PromptUI:PromptUI",
         "//Swiftgram/SGLogging:SGLogging",
         "//Swiftgram/SGSimpleSettings:SGSimpleSettings",
+        "//Swiftgram/SGConfig:SGConfig",
         "//Swiftgram/SGStrings:SGStrings",
 #        "//Swiftgram/SGAPI:SGAPI",
         "//Swiftgram/SGAPIToken:SGAPIToken",

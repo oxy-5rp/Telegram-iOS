@@ -143,6 +143,29 @@ Settings ▸ Other ▸ *Show Message ID*
 Prefixes each message's status line with `#<id>`, through the same funnel as the
 deleted-message marker.
 
+## Test server
+
+Settings ▸ Other ▸ *Use Test Server*
+
+New logins are created against Telegram's test datacenters instead of the real
+ones. `SharedAccountContext.beginNewAuth` is the single funnel every new login
+goes through — the bootstrap when no account exists, "Add Account", and the
+debug accounts screen — so the flag is applied in exactly one place.
+
+Accounts already signed in keep their own environment; the attribute is stored
+per account. While the flag is on you cannot add a *real* account, which is the
+point of a test build.
+
+There is also a dedicated **test flavour**: `build-system/sg-ci-test-configuration.json`
+sets `use_test_server` in `sg_config`, so the flag is on out of the box and the
+in-app toggle is shown disabled. Build it from the Actions tab — run the *Build
+IPA* workflow with `flavor: test` — and it publishes as `mod-build-<n>-test`.
+
+Both flavours share the bundle id `ph.telegra.Telegraph`, because the repo's
+fake provisioning profiles are issued for it and the build will not sign
+anything else. To keep a test build alongside the normal one, change the bundle
+id in Sideloadly at signing time.
+
 ## Building
 
 CI: `.github/workflows/sg-build.yml` builds `release_arm64` on a macOS runner

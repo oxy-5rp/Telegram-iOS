@@ -12,6 +12,7 @@ swift_library(
     deps = [
         "//Swiftgram/SGAppGroupIdentifier:SGAppGroupIdentifier",
         "//Swiftgram/SGLogging:SGLogging",
+        "//Swiftgram/SGConfig:SGConfig",
     ],
     visibility = [
         "//visibility:public",

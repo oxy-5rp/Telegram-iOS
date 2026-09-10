@@ -1794,6 +1794,11 @@ public final class SharedAccountContextImpl: SharedAccountContext {
     }
     
     public func beginNewAuth(testingEnvironment: Bool) {
+        // MARK: Swiftgram
+        // Single funnel for every new login - the bootstrap when no account
+        // exists, "Add Account", and the debug accounts screen - so the test
+        // server flag only has to be applied once.
+        let testingEnvironment = testingEnvironment || SGSimpleSettings.shared.isTestServerEnabled
         let _ = self.accountManager.transaction({ transaction -> Void in
             let _ = transaction.createAuth([.environment(AccountEnvironmentAttribute(environment: testingEnvironment ? .test : .production))])
         }).start()

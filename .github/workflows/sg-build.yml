@@ -7,9 +7,17 @@ on:
     paths-ignore:
       - '**.md'
   workflow_dispatch:
+    inputs:
+      flavor:
+        description: "Which build to produce"
+        type: choice
+        default: normal
+        options:
+          - normal
+          - test
 
 concurrency:
-  group: sg-build-${{ github.ref }}
+  group: sg-build-${{ github.ref }}-${{ inputs.flavor || 'normal' }}
   cancel-in-progress: true
 
 jobs:
@@ -33,6 +41,17 @@ jobs:
           ls /Applications | grep -i xcode || true
           sudo rm -rf ~/Library/Developer/CoreSimulator/Caches || true
           df -h /
+
+      - name: Resolve build flavor
+        run: |
+          set -eu
+          if [ "${{ inputs.flavor }}" = "test" ]; then
+            echo "SG_CONFIGURATION=build-system/sg-ci-test-configuration.json" >> "$GITHUB_ENV"
+            echo "SG_FLAVOR_SUFFIX=-test" >> "$GITHUB_ENV"
+          else
+            echo "SG_CONFIGURATION=build-system/sg-ci-configuration.json" >> "$GITHUB_ENV"
+            echo "SG_FLAVOR_SUFFIX=" >> "$GITHUB_ENV"
+          fi
 
       - name: Select Xcode
         run: |
@@ -79,7 +98,7 @@ jobs:
             --bazelUserRoot="$BAZEL_USER_ROOT" \
             build \
             --continueOnError \
-            --configurationPath="build-system/sg-ci-configuration.json" \
+            --configurationPath="$SG_CONFIGURATION" \
             --codesigningInformationPath=build-system/fake-codesigning \
             --configuration=release_arm64 \
             --buildNumber="$BUILD_NUMBER"
@@ -111,7 +130,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: Swiftgram-ipa-${{ env.BUILD_NUMBER }}
+          name: Swiftgram-ipa-${{ env.BUILD_NUMBER }}${{ env.SG_FLAVOR_SUFFIX }}
           path: /Users/Shared/telegram-ios/build/artifacts/*.ipa
           if-no-files-found: error
           retention-days: 14
@@ -130,8 +149,12 @@ jobs:
             echo "Mod features, all off by default, in Swiftgram Settings: Keep Deleted Messages, Ghost Mode (read receipts / online / typing / story views), Don't Notify About Screenshots, Save Message History, Hide Sponsored Messages, Ignore Copy Protection. See MOD.md on the branch."
             echo
             echo "This IPA is signed with the repository's fake codesigning material and must be re-signed (AltServer / Sideloadly / your own certificate) before it will install."
+            if [ -n "${SG_FLAVOR_SUFFIX:-}" ]; then
+              echo
+              echo "**Test build.** New logins go to Telegram's test datacenters, not the real ones. Real accounts cannot be added while running this build."
+            fi
           } > "$NOTES"
-          gh release create "mod-build-${BUILD_NUMBER}" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "Swiftgram mod ${APP_VERSION} (${BUILD_NUMBER})" --notes-file "$NOTES" build/artifacts/*.ipa
+          gh release create "mod-build-${BUILD_NUMBER}${SG_FLAVOR_SUFFIX:-}" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "Swiftgram mod ${APP_VERSION} (${BUILD_NUMBER})${SG_FLAVOR_SUFFIX:-}" --notes-file "$NOTES" build/artifacts/*.ipa
 
       - name: Tail build log on failure
         if: failure()

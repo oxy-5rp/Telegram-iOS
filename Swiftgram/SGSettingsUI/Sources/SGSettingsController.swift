@@ -1,6 +1,7 @@
 // MARK: Swiftgram
 import SGLogging
 import SGSimpleSettings
+import SGConfig
 import SGStrings
 import SGAPIToken
 
@@ -101,6 +102,7 @@ private enum SGBoolSetting: String {
     case keepSelfDestructingMedia
     case showMessageId
     case hideBlockedUsers
+    case useTestServer
     case stickerTimestamp
     case hideRecordingButton
     case hideTabBar
@@ -370,6 +372,8 @@ private func SGControllerEntries(presentationData: PresentationData, callListSet
     entries.append(.toggle(id: id.count, section: .other, settingName: .keepSelfDestructingMedia, value: SGSimpleSettings.shared.keepSelfDestructingMedia, text: i18n("Settings.KeepSelfDestructingMedia", lang), enabled: true))
     entries.append(.notice(id: id.count, section: .other, text: i18n("Settings.KeepSelfDestructingMedia.Notice", lang)))
     entries.append(.toggle(id: id.count, section: .other, settingName: .showMessageId, value: SGSimpleSettings.shared.showMessageId, text: i18n("Settings.ShowMessageID", lang), enabled: true))
+    entries.append(.toggle(id: id.count, section: .other, settingName: .useTestServer, value: SGSimpleSettings.shared.isTestServerEnabled, text: i18n("Settings.UseTestServer", lang), enabled: !SG_CONFIG.useTestServer))
+    entries.append(.notice(id: id.count, section: .other, text: i18n("Settings.UseTestServer.Notice", lang)))
     entries.append(.toggle(id: id.count, section: .other, settingName: .localPremium, value: SGSimpleSettings.shared.localPremium, text: i18n("Settings.LocalPremium", lang), enabled: true))
     entries.append(.notice(id: id.count, section: .other, text: i18n("Settings.LocalPremium.Notice", lang)))
     entries.append(.notice(id: id.count, section: .other, text: i18n("Settings.KeepDeletedMessages.Notice", lang)))
@@ -513,6 +517,8 @@ public func sgSettingsController(context: AccountContext/*, focusOnItemTag: Int?
         case .hideBlockedUsers:
             SGSimpleSettings.shared.hideBlockedUsers = value
             askForRestart?()
+        case .useTestServer:
+            SGSimpleSettings.shared.useTestServer = value
         case .localPremium:
             SGSimpleSettings.shared.localPremium = value
             askForRestart?()

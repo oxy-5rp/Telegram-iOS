@@ -303,3 +303,5 @@
 "Settings.KeepSelfDestructingMedia.Notice" = "View-once photos and videos stay in the chat instead of turning into an expired placeholder. Secret chats and whole-chat auto-delete timers are unaffected.";
 "Settings.ShowMessageID" = "Show Message ID";
 "Settings.HideBlockedUsers" = "Hide Messages From Blocked Users";
+"Settings.UseTestServer" = "Use Test Server";
+"Settings.UseTestServer.Notice" = "New logins go to Telegram's test datacenters instead of the real ones. Existing accounts are unaffected, but while this is on you cannot add a real account. Test accounts, chats and messages are entirely separate from production.";

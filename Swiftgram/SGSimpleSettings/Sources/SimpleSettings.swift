@@ -1,6 +1,7 @@
 import Foundation
 import SGAppGroupIdentifier
 import SGLogging
+import SGConfig
 
 let APP_GROUP_IDENTIFIER = sgAppGroupIdentifier()
 
@@ -86,6 +87,7 @@ public class SGSimpleSettings {
             { let _ = self.keepSelfDestructingMedia },
             { let _ = self.showMessageId },
             { let _ = self.hideBlockedUsers },
+            { let _ = self.useTestServer },
             { let _ = self.startTelescopeWithRearCam },
             { let _ = self.hideRecordingButton },
             { let _ = self.inputToolbar },
@@ -164,6 +166,7 @@ public class SGSimpleSettings {
         case keepSelfDestructingMedia
         case showMessageId
         case hideBlockedUsers
+        case useTestServer
         case stickerSize
         case stickerTimestamp
         case hideRecordingButton
@@ -338,6 +341,7 @@ public class SGSimpleSettings {
         Keys.keepSelfDestructingMedia.rawValue: false,
         Keys.showMessageId.rawValue: false,
         Keys.hideBlockedUsers.rawValue: false,
+        Keys.useTestServer.rawValue: false,
         Keys.stickerSize.rawValue: 100,
         Keys.stickerTimestamp.rawValue: true,
         Keys.hideRecordingButton.rawValue: false,
@@ -559,6 +563,15 @@ public class SGSimpleSettings {
 
     @UserDefault(key: Keys.hideBlockedUsers.rawValue)
     public var hideBlockedUsers: Bool
+
+    @UserDefault(key: Keys.useTestServer.rawValue)
+    public var useTestServer: Bool
+
+    /// True when new logins should go to Telegram's test datacenters, either
+    /// because this is a test build or because the user asked for it.
+    public var isTestServerEnabled: Bool {
+        return SG_CONFIG.useTestServer || self.useTestServer
+    }
 
     /// Newline-separated regular expressions. A message whose text matches any
     /// of them is left out of the chat entirely.
