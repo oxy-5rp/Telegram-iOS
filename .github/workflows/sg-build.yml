@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - 'sg-**'
+    paths-ignore:
+      - '**.md'
   workflow_dispatch:
 
 concurrency:
