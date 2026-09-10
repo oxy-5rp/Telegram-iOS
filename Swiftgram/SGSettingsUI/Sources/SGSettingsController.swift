@@ -98,6 +98,8 @@ private enum SGBoolSetting: String {
     case disableCopyProtection
     case localPremium
     case keepLeftChats
+    case keepSelfDestructingMedia
+    case showMessageId
     case stickerTimestamp
     case hideRecordingButton
     case hideTabBar
@@ -363,6 +365,9 @@ private func SGControllerEntries(presentationData: PresentationData, callListSet
     entries.append(.toggle(id: id.count, section: .other, settingName: .saveMessageEditHistory, value: SGSimpleSettings.shared.saveMessageEditHistory, text: i18n("Settings.SaveMessageEditHistory", lang), enabled: true))
     entries.append(.toggle(id: id.count, section: .other, settingName: .disableCopyProtection, value: SGSimpleSettings.shared.disableCopyProtection, text: i18n("Settings.DisableCopyProtection", lang), enabled: true))
     entries.append(.toggle(id: id.count, section: .other, settingName: .keepLeftChats, value: SGSimpleSettings.shared.keepLeftChats, text: i18n("Settings.KeepLeftChats", lang), enabled: true))
+    entries.append(.toggle(id: id.count, section: .other, settingName: .keepSelfDestructingMedia, value: SGSimpleSettings.shared.keepSelfDestructingMedia, text: i18n("Settings.KeepSelfDestructingMedia", lang), enabled: true))
+    entries.append(.notice(id: id.count, section: .other, text: i18n("Settings.KeepSelfDestructingMedia.Notice", lang)))
+    entries.append(.toggle(id: id.count, section: .other, settingName: .showMessageId, value: SGSimpleSettings.shared.showMessageId, text: i18n("Settings.ShowMessageID", lang), enabled: true))
     entries.append(.toggle(id: id.count, section: .other, settingName: .localPremium, value: SGSimpleSettings.shared.localPremium, text: i18n("Settings.LocalPremium", lang), enabled: true))
     entries.append(.notice(id: id.count, section: .other, text: i18n("Settings.LocalPremium.Notice", lang)))
     entries.append(.notice(id: id.count, section: .other, text: i18n("Settings.KeepDeletedMessages.Notice", lang)))
@@ -497,6 +502,11 @@ public func sgSettingsController(context: AccountContext/*, focusOnItemTag: Int?
             askForRestart?()
         case .keepLeftChats:
             SGSimpleSettings.shared.keepLeftChats = value
+            askForRestart?()
+        case .keepSelfDestructingMedia:
+            SGSimpleSettings.shared.keepSelfDestructingMedia = value
+        case .showMessageId:
+            SGSimpleSettings.shared.showMessageId = value
             askForRestart?()
         case .localPremium:
             SGSimpleSettings.shared.localPremium = value

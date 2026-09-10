@@ -6,6 +6,7 @@ import TelegramStringFormatting
 import TextFormat
 import LocalizedPeerData
 import AccountContext
+import SGSimpleSettings
 
 // MARK: Swiftgram
 /// Marker prepended to the status line of a message that was deleted remotely
@@ -254,6 +255,9 @@ public func stringForMessageTimestampStatus(
     }
     
     // MARK: Swiftgram
+    if SGSimpleSettings.shared.showMessageId {
+        dateText = "#\(message.id.id) \(dateText)"
+    }
     if message.sgIsDeleted {
         dateText = "\(sgDeletedMessageMarker) \(dateText)"
     }

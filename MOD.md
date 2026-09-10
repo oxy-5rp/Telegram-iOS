@@ -112,6 +112,27 @@ limits configuration derived from it). Anything the **server** checks — upload
 size, saved GIF count, premium reactions, stickers — is unaffected, because the
 server knows the truth. This is a client-side unlock, not a subscription.
 
+## Keep Self-Destructing Media
+
+Settings ▸ Other ▸ *Keep Self-Destructing Media*
+
+View-once photos and videos stay in the chat instead of being replaced by an
+expired-content placeholder. The scheduled expiry entry is cleared from the
+timestamp table so it is not retried in a loop, and the message itself is left
+untouched.
+
+Scope: cloud self-destructing media only (`AutoclearTimeoutMessageAttribute`,
+autoremove tag 1). Secret-chat TTL and a chat's own auto-delete timer
+(`AutoremoveTimeoutMessageAttribute`, tag 0) still delete as normal — those are
+timers you or the chat set, not a one-time view.
+
+## Show Message ID
+
+Settings ▸ Other ▸ *Show Message ID*
+
+Prefixes each message's status line with `#<id>`, through the same funnel as the
+deleted-message marker.
+
 ## Building
 
 CI: `.github/workflows/sg-build.yml` builds `release_arm64` on a macOS runner

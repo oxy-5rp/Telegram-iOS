@@ -83,6 +83,8 @@ public class SGSimpleSettings {
             { let _ = self.localPremium },
             { let _ = self.keepLeftChats },
             { let _ = self.messageFilters },
+            { let _ = self.keepSelfDestructingMedia },
+            { let _ = self.showMessageId },
             { let _ = self.startTelescopeWithRearCam },
             { let _ = self.hideRecordingButton },
             { let _ = self.inputToolbar },
@@ -158,6 +160,8 @@ public class SGSimpleSettings {
         case localPremium
         case keepLeftChats
         case messageFilters
+        case keepSelfDestructingMedia
+        case showMessageId
         case stickerSize
         case stickerTimestamp
         case hideRecordingButton
@@ -329,6 +333,8 @@ public class SGSimpleSettings {
         Keys.localPremium.rawValue: false,
         Keys.keepLeftChats.rawValue: false,
         Keys.messageFilters.rawValue: "",
+        Keys.keepSelfDestructingMedia.rawValue: false,
+        Keys.showMessageId.rawValue: false,
         Keys.stickerSize.rawValue: 100,
         Keys.stickerTimestamp.rawValue: true,
         Keys.hideRecordingButton.rawValue: false,
@@ -541,6 +547,12 @@ public class SGSimpleSettings {
 
     @UserDefault(key: Keys.keepLeftChats.rawValue)
     public var keepLeftChats: Bool
+
+    @UserDefault(key: Keys.keepSelfDestructingMedia.rawValue)
+    public var keepSelfDestructingMedia: Bool
+
+    @UserDefault(key: Keys.showMessageId.rawValue)
+    public var showMessageId: Bool
 
     /// Newline-separated regular expressions. A message whose text matches any
     /// of them is left out of the chat entirely.

@@ -3,6 +3,7 @@ import Postbox
 import SwiftSignalKit
 import TelegramApi
 import MtProtoKit
+import SGSimpleSettings
 
 private typealias SignalKitTimer = SwiftSignalKit.Timer
 
@@ -82,7 +83,16 @@ func managedAutoremoveMessageOperations(network: Network, postbox: Postbox, isRe
                     Logger.shared.log("Autoremove", "Performing autoremove for \(entry.messageId), isRemove: \(isRemove)")
 
                     if let message = transaction.getMessage(entry.messageId) {
-                        if message.id.peerId.namespace == Namespaces.Peer.SecretChat || isRemove {
+                        // MARK: Swiftgram
+                        // Self-destructing / view-once cloud media (tag 1, i.e.
+                        // AutoclearTimeoutMessageAttribute) is left intact: drop the
+                        // scheduled entry so it is not retried, and do not replace the
+                        // media with expired-content placeholders. Whole-message
+                        // auto-delete timers (isRemove) still run - those are the
+                        // chat's own timer, not a one-time view.
+                        if SGSimpleSettings.shared.keepSelfDestructingMedia && !isRemove {
+                            transaction.clearTimestampBasedAttribute(id: entry.messageId, tag: tag)
+                        } else if message.id.peerId.namespace == Namespaces.Peer.SecretChat || isRemove {
                             _internal_deleteMessages(transaction: transaction, mediaBox: postbox.mediaBox, ids: [entry.messageId])
                         } else {
                             transaction.updateMessage(message.id, update: { currentMessage in

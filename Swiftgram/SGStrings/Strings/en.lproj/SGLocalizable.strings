@@ -299,3 +299,6 @@
 "Settings.KeepLeftChats" = "Keep Chats You Left";
 "Settings.LocalPremium" = "Local Premium";
 "Settings.LocalPremium.Notice" = "Unlocks the Premium limits and gates this app enforces on its own. Anything the server checks - upload size, saved GIFs, reactions - still follows your real account.";
+"Settings.KeepSelfDestructingMedia" = "Keep Self-Destructing Media";
+"Settings.KeepSelfDestructingMedia.Notice" = "View-once photos and videos stay in the chat instead of turning into an expired placeholder. Secret chats and whole-chat auto-delete timers are unaffected.";
+"Settings.ShowMessageID" = "Show Message ID";
