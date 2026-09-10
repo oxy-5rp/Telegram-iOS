@@ -97,8 +97,12 @@ A pattern written as a tag matches an attachment instead of text — `<photo>`,
 `<reply>`. An unrecognised tag is compiled as a regex, so a literal `<b>` still
 does what it looks like.
 
-Filtering by sender and per-chat filter scoping are not implemented; a filter
-applies everywhere.
+*Hide Messages From Blocked Users* in the same section drops every message whose
+author you have blocked. The blocked list is paginated and main-queue bound, so
+`SGBlockedPeersCache` pages through it once at launch and caches the ids for the
+layout path; the setting therefore takes effect after a restart.
+
+Per-chat filter scoping is not implemented — a filter applies everywhere.
 
 ## Keep Chats You Left
 

@@ -100,6 +100,7 @@ private enum SGBoolSetting: String {
     case keepLeftChats
     case keepSelfDestructingMedia
     case showMessageId
+    case hideBlockedUsers
     case stickerTimestamp
     case hideRecordingButton
     case hideTabBar
@@ -207,6 +208,7 @@ private func SGControllerEntries(presentationData: PresentationData, callListSet
         displayedMessageFilters += 1
     }
     id.increment(maxDisplayedMessageFilters - displayedMessageFilters)
+    entries.append(.toggle(id: id.count, section: .messageFilters, settingName: .hideBlockedUsers, value: SGSimpleSettings.shared.hideBlockedUsers, text: i18n("Settings.HideBlockedUsers", lang), enabled: true))
     entries.append(.notice(id: id.count, section: .messageFilters, text: i18n("Settings.MessageFilters.Notice", lang)))
     
     if appConfiguration.sgWebSettings.global.canEditSettings {
@@ -507,6 +509,9 @@ public func sgSettingsController(context: AccountContext/*, focusOnItemTag: Int?
             SGSimpleSettings.shared.keepSelfDestructingMedia = value
         case .showMessageId:
             SGSimpleSettings.shared.showMessageId = value
+            askForRestart?()
+        case .hideBlockedUsers:
+            SGSimpleSettings.shared.hideBlockedUsers = value
             askForRestart?()
         case .localPremium:
             SGSimpleSettings.shared.localPremium = value

@@ -297,3 +297,4 @@
 "Settings.KeepSelfDestructingMedia" = "Сохранять одноразовые медиа";
 "Settings.KeepSelfDestructingMedia.Notice" = "Фото и видео с одноразовым просмотром остаются в чате вместо заглушки «просмотрено». Секретные чаты и таймер автоудаления чата не затрагиваются.";
 "Settings.ShowMessageID" = "Показывать ID сообщения";
+"Settings.HideBlockedUsers" = "Скрывать сообщения заблокированных";

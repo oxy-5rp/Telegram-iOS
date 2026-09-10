@@ -440,6 +440,9 @@ public final class AccountContextImpl: AccountContext {
             strongSelf.animatedEmojiStickersPromise.set(.single(stickers))
         })
         
+        // MARK: Swiftgram
+        SGBlockedPeersCache.shared.setup(account: account)
+
         self.userLimitsConfigurationDisposable = (self.engine.data.subscribe(TelegramEngine.EngineData.Item.Peer.Peer(id: account.peerId))
         |> mapToSignal { peer -> Signal<(Bool, EngineConfiguration.UserLimits), NoError> in
             // MARK: Swiftgram

@@ -126,6 +126,10 @@ private final class SGMessageFilterCache {
 /// True when the message matches any filter and should be left out of the chat
 /// entirely.
 func sgShouldHideMessage(_ message: Message) -> Bool {
+    if SGSimpleSettings.shared.hideBlockedUsers, let author = message.author, SGBlockedPeersCache.shared.contains(author.id) {
+        return true
+    }
+
     let source = SGSimpleSettings.shared.messageFilters
     if source.isEmpty {
         return false

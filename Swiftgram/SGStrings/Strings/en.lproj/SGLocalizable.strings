@@ -302,3 +302,4 @@
 "Settings.KeepSelfDestructingMedia" = "Keep Self-Destructing Media";
 "Settings.KeepSelfDestructingMedia.Notice" = "View-once photos and videos stay in the chat instead of turning into an expired placeholder. Secret chats and whole-chat auto-delete timers are unaffected.";
 "Settings.ShowMessageID" = "Show Message ID";
+"Settings.HideBlockedUsers" = "Hide Messages From Blocked Users";

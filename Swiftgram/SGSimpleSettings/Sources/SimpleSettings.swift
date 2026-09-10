@@ -85,6 +85,7 @@ public class SGSimpleSettings {
             { let _ = self.messageFilters },
             { let _ = self.keepSelfDestructingMedia },
             { let _ = self.showMessageId },
+            { let _ = self.hideBlockedUsers },
             { let _ = self.startTelescopeWithRearCam },
             { let _ = self.hideRecordingButton },
             { let _ = self.inputToolbar },
@@ -162,6 +163,7 @@ public class SGSimpleSettings {
         case messageFilters
         case keepSelfDestructingMedia
         case showMessageId
+        case hideBlockedUsers
         case stickerSize
         case stickerTimestamp
         case hideRecordingButton
@@ -335,6 +337,7 @@ public class SGSimpleSettings {
         Keys.messageFilters.rawValue: "",
         Keys.keepSelfDestructingMedia.rawValue: false,
         Keys.showMessageId.rawValue: false,
+        Keys.hideBlockedUsers.rawValue: false,
         Keys.stickerSize.rawValue: 100,
         Keys.stickerTimestamp.rawValue: true,
         Keys.hideRecordingButton.rawValue: false,
@@ -553,6 +556,9 @@ public class SGSimpleSettings {
 
     @UserDefault(key: Keys.showMessageId.rawValue)
     public var showMessageId: Bool
+
+    @UserDefault(key: Keys.hideBlockedUsers.rawValue)
+    public var hideBlockedUsers: Bool
 
     /// Newline-separated regular expressions. A message whose text matches any
     /// of them is left out of the chat entirely.
