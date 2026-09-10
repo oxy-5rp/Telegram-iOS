@@ -158,7 +158,10 @@ point of a test build.
 
 There is also a dedicated **test flavour**: `build-system/sg-ci-test-configuration.json`
 sets `use_test_server` in `sg_config`, so the flag is on out of the box and the
-in-app toggle is shown disabled. Build it from the Actions tab — run the *Build
+in-app toggle is shown disabled. Note that `sg_config` is substituted verbatim
+into a `-D` compiler flag, so its JSON must contain **no whitespace** — a single
+space after the colon splits the flag in two and the build dies in
+`BuildConfig.m`. Build it from the Actions tab — run the *Build
 IPA* workflow with `flavor: test` — and it publishes as `mod-build-<n>-test`.
 
 Both flavours share the bundle id `ph.telegra.Telegraph`, because the repo's
