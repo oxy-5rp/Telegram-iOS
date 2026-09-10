@@ -49,9 +49,22 @@ the device's iOS version first.
 A $99/year account signs the entitlements properly: App Groups work, extensions
 work, and the app lasts a year instead of a week.
 
-## Before logging into a real account
+## The build needs its own api_id
 
-The build carries Telegram's public `api_id`. Get your own from
-[my.telegram.org](https://my.telegram.org) and put it in
-`build-system/sg-ci-configuration.json` (`api_id` / `api_hash`), then rebuild.
-Third-party clients using someone else's `api_id` can get the account limited.
+Not just as a ban-risk precaution — **logging in does not work otherwise.**
+
+Telegram asks official api_ids to prove they are the real app by answering a
+silent APNs push: `setExternalRequestVerification` in `Network.swift` waits for a
+`verify_nonce` / `verify_secret` payload delivered through
+`didReceiveRemoteNotification`. A build re-signed with a free Apple ID has no
+`aps-environment` entitlement, never registers with APNs, and so never receives
+that push. The wait times out after 15 seconds, `auth.sendCode` then dies on its
+own 20-second timeout, and the login screen says *"Please check your internet
+connection"* — with a perfectly healthy network. Third-party api_ids are not
+asked for this at all.
+
+Get credentials from [my.telegram.org](https://my.telegram.org) (API development
+tools) and add them to the repository's **Actions secrets** as `TG_API_ID` and
+`TG_API_HASH`. The workflow substitutes them into the build configuration at
+build time. They live in secrets rather than in the committed configuration on
+purpose: an `api_hash` does not belong in git.
