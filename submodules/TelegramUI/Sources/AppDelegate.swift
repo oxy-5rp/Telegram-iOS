@@ -303,7 +303,10 @@ private func extractAccountManagerState(records: AccountRecordsView<TelegramAcco
         let appGroupName = "group.\(baseAppBundleId)"
 
         let configuration = URLSessionConfiguration.background(withIdentifier: identifier)
-        configuration.sharedContainerIdentifier = appGroupName
+        // MARK: Swiftgram
+        if sgHasAppGroupContainer(appGroupName) {
+            configuration.sharedContainerIdentifier = appGroupName
+        }
         configuration.isDiscretionary = false
         let session = URLSession(configuration: configuration, delegate: self, delegateQueue: .main)
         self.urlSessions.append(session)
@@ -659,7 +662,10 @@ private func extractAccountManagerState(records: AccountRecordsView<TelegramAcco
             isICloudEnabled: buildConfig.isICloudEnabled
         )
         
-        guard let appGroupUrl = maybeAppGroupUrl else {
+        // MARK: Swiftgram
+        // A build re-signed with a free Apple ID has no App Group entitlement,
+        // so fall back to a private container instead of dying on "Error 2".
+        guard let appGroupUrl = maybeAppGroupUrl ?? sgFallbackAppGroupUrl() else {
             self.mainWindow?.presentNative(UIAlertController(title: nil, message: "Error 2", preferredStyle: .alert))
             return true
         }

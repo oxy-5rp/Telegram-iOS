@@ -13,6 +13,8 @@ concurrency:
 jobs:
   build:
     runs-on: macos-26
+    permissions:
+      contents: write
     timeout-minutes: 350
 
     steps:
@@ -111,6 +113,23 @@ jobs:
           path: /Users/Shared/telegram-ios/build/artifacts/*.ipa
           if-no-files-found: error
           retention-days: 14
+
+      - name: Publish release
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eu
+          cd /Users/Shared/telegram-ios
+          NOTES=$(mktemp)
+          {
+            echo "Unsigned build of \`${GITHUB_REF_NAME}\` at ${GITHUB_SHA}."
+            echo
+            echo "Mod features, all off by default, in Swiftgram Settings: Keep Deleted Messages, Ghost Mode (read receipts / online / typing / story views), Don't Notify About Screenshots, Save Message History, Hide Sponsored Messages, Ignore Copy Protection. See MOD.md on the branch."
+            echo
+            echo "This IPA is signed with the repository's fake codesigning material and must be re-signed (AltServer / Sideloadly / your own certificate) before it will install."
+          } > "$NOTES"
+          gh release create "mod-build-${BUILD_NUMBER}" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "Swiftgram mod ${APP_VERSION} (${BUILD_NUMBER})" --notes-file "$NOTES" build/artifacts/*.ipa
 
       - name: Tail build log on failure
         if: failure()
