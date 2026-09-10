@@ -90,3 +90,6 @@ xcode-files
 **/node_modules/
 tools/sim-watcher/dist/
 .mcp.json
+
+# Crash logs pulled from a device
+*.ips

@@ -178,6 +178,23 @@ Everything there is disposable: anyone can sign in as any test number, and
 Telegram wipes the test datacenters periodically. Do not put anything real in
 them.
 
+## Surviving a re-signed install
+
+Re-signing an IPA with a free Apple ID strips every entitlement that account
+cannot issue, while the compiled code still believes those features exist. Two
+of those crashed the app on launch, and both are handled:
+
+- **App Group.** `containerURL(forSecurityApplicationGroupIdentifier:)` returns
+  nil, and stock `AppDelegate` stops at an "Error 2" alert without ever creating
+  a root view controller, which iOS kills the process for. The app now falls
+  back to a private container — see *Keep Deleted Messages* above for where.
+- **iCloud.** `CKContainer.default()` **traps** rather than returning nil or
+  throwing, so the emergency-datacenter lookup in `CloudData` took the whole app
+  down from a background queue. `makeCloudDataContext` now reads the embedded
+  provisioning profile and refuses to touch CloudKit without a real
+  `com.apple.developer.icloud-container-identifiers` entitlement, and the CI
+  configurations build with `enable_icloud` and `enable_siri` off.
+
 ## Building
 
 CI: `.github/workflows/sg-build.yml` builds `release_arm64` on a macOS runner

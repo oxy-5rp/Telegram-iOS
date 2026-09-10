@@ -1317,6 +1317,14 @@ class Keychain: NSObject, MTKeychain {
 }
 #if os(iOS)
 func makeCloudDataContext(encryptionProvider: EncryptionProvider) -> CloudDataContext? {
+    // MARK: Swiftgram
+    // CKContainer.default() traps - it does not return nil or throw - when the
+    // app has no iCloud container entitlement, which is exactly what re-signing
+    // with a free Apple ID leaves behind. This path only fetches emergency
+    // datacenter addresses, so skipping it costs nothing.
+    if !sgHasICloudContainerEntitlement() {
+        return nil
+    }
     if #available(iOS 10.0, *) {
         return CloudDataContextImpl(encryptionProvider: encryptionProvider)
     } else {
