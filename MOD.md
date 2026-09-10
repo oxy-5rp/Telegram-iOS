@@ -91,8 +91,14 @@ pattern is dropped rather than matched literally.
 - `submodules/TelegramUI/Sources/SGMessageFilters.swift` — the matcher, with the
   compiled expressions cached against the stored pattern string.
 
-Only message text is matched (captions included). Filtering by sender, by media
-type, or per-chat scoping is not implemented.
+A pattern written as a tag matches an attachment instead of text — `<photo>`,
+`<video>`, `<gif>`, `<sticker>`, `<voice>`, `<round>`, `<audio>`, `<file>`,
+`<poll>`, `<contact>`, `<location>`, `<link>`, `<button>`, `<forward>`,
+`<reply>`. An unrecognised tag is compiled as a regex, so a literal `<b>` still
+does what it looks like.
+
+Filtering by sender and per-chat filter scoping are not implemented; a filter
+applies everywhere.
 
 ## Keep Chats You Left
 
