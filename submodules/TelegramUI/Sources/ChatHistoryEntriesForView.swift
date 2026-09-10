@@ -154,6 +154,11 @@ func chatHistoryEntriesForView(
             continue
         }
         
+        // MARK: Swiftgram
+        if sgShouldHideMessage(message) {
+            continue
+        }
+        
         if case let .replyThread(replyThreadMessage) = location, replyThreadMessage.isForumPost {
             for media in message.media {
                 if let action = media as? TelegramMediaAction {

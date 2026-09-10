@@ -442,7 +442,8 @@ public final class AccountContextImpl: AccountContext {
         
         self.userLimitsConfigurationDisposable = (self.engine.data.subscribe(TelegramEngine.EngineData.Item.Peer.Peer(id: account.peerId))
         |> mapToSignal { peer -> Signal<(Bool, EngineConfiguration.UserLimits), NoError> in
-            let isPremium = peer?.isPremium ?? false
+            // MARK: Swiftgram
+            let isPremium = (peer?.isPremium ?? false) || SGSimpleSettings.shared.localPremium
             return self.engine.data.subscribe(TelegramEngine.EngineData.Item.Configuration.UserLimits(isPremium: isPremium))
             |> map { userLimits in
                 return (isPremium, userLimits)

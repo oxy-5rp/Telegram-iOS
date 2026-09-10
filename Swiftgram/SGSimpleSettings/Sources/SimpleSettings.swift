@@ -80,6 +80,9 @@ public class SGSimpleSettings {
             { let _ = self.saveMessageEditHistory },
             { let _ = self.disableScreenshotNotification },
             { let _ = self.disableCopyProtection },
+            { let _ = self.localPremium },
+            { let _ = self.keepLeftChats },
+            { let _ = self.messageFilters },
             { let _ = self.startTelescopeWithRearCam },
             { let _ = self.hideRecordingButton },
             { let _ = self.inputToolbar },
@@ -152,6 +155,9 @@ public class SGSimpleSettings {
         case saveMessageEditHistory
         case disableScreenshotNotification
         case disableCopyProtection
+        case localPremium
+        case keepLeftChats
+        case messageFilters
         case stickerSize
         case stickerTimestamp
         case hideRecordingButton
@@ -320,6 +326,9 @@ public class SGSimpleSettings {
         Keys.saveMessageEditHistory.rawValue: false,
         Keys.disableScreenshotNotification.rawValue: false,
         Keys.disableCopyProtection.rawValue: false,
+        Keys.localPremium.rawValue: false,
+        Keys.keepLeftChats.rawValue: false,
+        Keys.messageFilters.rawValue: "",
         Keys.stickerSize.rawValue: 100,
         Keys.stickerTimestamp.rawValue: true,
         Keys.hideRecordingButton.rawValue: false,
@@ -526,6 +535,30 @@ public class SGSimpleSettings {
 
     @UserDefault(key: Keys.disableCopyProtection.rawValue)
     public var disableCopyProtection: Bool
+
+    @UserDefault(key: Keys.localPremium.rawValue)
+    public var localPremium: Bool
+
+    @UserDefault(key: Keys.keepLeftChats.rawValue)
+    public var keepLeftChats: Bool
+
+    /// Newline-separated regular expressions. A message whose text matches any
+    /// of them is left out of the chat entirely.
+    @UserDefault(key: Keys.messageFilters.rawValue)
+    public var messageFilters: String
+
+    /// The filter list as individual patterns, blank lines dropped.
+    public var messageFilterPatterns: [String] {
+        get {
+            return self.messageFilters
+                .components(separatedBy: "\n")
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                .filter { !$0.isEmpty }
+        }
+        set {
+            self.messageFilters = newValue.joined(separator: "\n")
+        }
+    }
 
     /// Effective Ghost Mode switches. Every sub-option only applies while the
     /// master toggle is on, so turning Ghost Mode off restores stock behaviour

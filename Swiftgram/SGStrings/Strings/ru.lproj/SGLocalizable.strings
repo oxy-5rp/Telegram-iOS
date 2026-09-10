@@ -287,3 +287,10 @@
 "ContextMenu.EditHistory" = "История изменений";
 "Settings.GhostMode.DisableScreenshotNotification" = "Не сообщать о скриншотах";
 "Settings.DisableCopyProtection" = "Игнорировать запрет пересылки";
+"Settings.MessageFilters.Header" = "ФИЛЬТРЫ СООБЩЕНИЙ";
+"Settings.MessageFilters.Add" = "Добавить фильтр";
+"Settings.MessageFilters.Placeholder" = "Слово или регулярное выражение";
+"Settings.MessageFilters.Notice" = "Сообщения, текст которых совпадает с любым из шаблонов, полностью скрываются из чатов. Обычные слова работают как есть, всё остальное трактуется как регулярное выражение. Нажмите на фильтр, чтобы удалить его.";
+"Settings.KeepLeftChats" = "Сохранять покинутые чаты";
+"Settings.LocalPremium" = "Локальный Premium";
+"Settings.LocalPremium.Notice" = "Снимает ограничения Premium, которые приложение проверяет само. Всё, что проверяет сервер — размер загрузок, сохранённые GIF, реакции — по-прежнему зависит от вашего реального аккаунта.";

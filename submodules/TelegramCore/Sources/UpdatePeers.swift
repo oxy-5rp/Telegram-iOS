@@ -1,6 +1,7 @@
 import Foundation
 import Postbox
 import TelegramApi
+import SGSimpleSettings
 
 func isPeerHiddenByCollapsedCommunity(transaction: Transaction, peerId: PeerId, peer: Peer? = nil) -> Bool {
     if let channel = (peer ?? transaction.getPeer(peerId)) as? TelegramChannel, let linkedCommunityId = channel.linkedCommunityId {
@@ -17,6 +18,12 @@ func shouldExcludePeerFromChatList(transaction: Transaction, peerId: PeerId, pee
         return false
     }
 
+    // MARK: Swiftgram
+    // Keep chats you were kicked from, or left, in the chat list instead of
+    // dropping them. Groups that no longer exist at all (deactivated) are still
+    // excluded, as is a chat hidden by a collapsed community.
+    let keepLeftChats = SGSimpleSettings.shared.keepLeftChats
+
     if let group = peer as? TelegramGroup {
         if group.flags.contains(.deactivated) {
             return true
@@ -25,13 +32,16 @@ func shouldExcludePeerFromChatList(transaction: Transaction, peerId: PeerId, pee
         case .Member:
             return false
         default:
-            return true
+            return !keepLeftChats
         }
     } else if let channel = peer as? TelegramChannel {
         switch channel.participationStatus {
         case .member:
             return isPeerHiddenByCollapsedCommunity(transaction: transaction, peerId: peerId, peer: channel)
         default:
+            if keepLeftChats {
+                return isPeerHiddenByCollapsedCommunity(transaction: transaction, peerId: peerId, peer: channel)
+            }
             return true
         }
     } else if let community = peer as? TelegramCommunity {

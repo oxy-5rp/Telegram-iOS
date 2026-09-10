@@ -78,6 +78,40 @@ Chats with forwarding/saving restricted behave like unrestricted ones locally:
 Settings ▸ Other ▸ *Hide Sponsored Messages* — short-circuits
 `messages.getSponsoredMessages`, so no ads are produced for any chat.
 
+## Message Filters
+
+Settings ▸ Message Filters
+
+Add a word or a regular expression; any message whose text matches is left out
+of the chat entirely — it is dropped in `chatHistoryEntriesForView`, the one
+place every chat entry passes through, so there is no placeholder row. Tap a
+filter to remove it. Patterns are matched case-insensitively; an invalid
+pattern is dropped rather than matched literally.
+
+- `submodules/TelegramUI/Sources/SGMessageFilters.swift` — the matcher, with the
+  compiled expressions cached against the stored pattern string.
+
+Only message text is matched (captions included). Filtering by sender, by media
+type, or per-chat scoping is not implemented.
+
+## Keep Chats You Left
+
+Settings ▸ Other ▸ *Keep Chats You Left*
+
+Groups and channels you left or were removed from stay in the chat list instead
+of disappearing. `shouldExcludePeerFromChatList` is the single funnel for that
+decision. Groups that were deactivated outright are still excluded.
+
+## Local Premium
+
+Settings ▸ Other ▸ *Local Premium*
+
+Reports the account as Premium to the app itself, which unlocks the limits and
+gates the client enforces on its own (`AccountContext.isPremium` and the user
+limits configuration derived from it). Anything the **server** checks — upload
+size, saved GIF count, premium reactions, stickers — is unaffected, because the
+server knows the truth. This is a client-side unlock, not a subscription.
+
 ## Building
 
 CI: `.github/workflows/sg-build.yml` builds `release_arm64` on a macOS runner

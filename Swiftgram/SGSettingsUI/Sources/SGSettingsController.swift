@@ -5,6 +5,7 @@ import SGStrings
 import SGAPIToken
 
 import SGItemListUI
+import PromptUI
 import Foundation
 import UIKit
 import Display
@@ -29,6 +30,7 @@ private enum SGControllerSection: Int32, SGItemListSection {
     case search
     case trending
     case ghostMode
+    case messageFilters
     case content
     case tabs
     case folders
@@ -94,6 +96,8 @@ private enum SGBoolSetting: String {
     case saveMessageEditHistory
     case disableScreenshotNotification
     case disableCopyProtection
+    case localPremium
+    case keepLeftChats
     case stickerTimestamp
     case hideRecordingButton
     case hideTabBar
@@ -149,6 +153,11 @@ private struct SGSettingsControllerState: Equatable {
     var searchQuery: String?
 }
 
+private enum SGSettingsAction: Hashable {
+    case addMessageFilter
+    case removeMessageFilter(String)
+}
+
 private typealias SGControllerEntry = SGItemListUIEntry<SGControllerSection, SGBoolSetting, SGSliderSetting, SGOneFromManySetting, SGDisclosureLink, AnyHashable>
 
 private func SGControllerEntries(presentationData: PresentationData, callListSettings: CallListSettings, experimentalUISettings: ExperimentalUISettings, appConfiguration: AppConfiguration, nameColors: PeerNameColors, state: SGSettingsControllerState) -> [SGControllerEntry] {
@@ -181,6 +190,22 @@ private func SGControllerEntries(presentationData: PresentationData, callListSet
     entries.append(.toggle(id: id.count, section: .ghostMode, settingName: .ghostDontReadStories, value: SGSimpleSettings.shared.ghostDontReadStories, text: i18n("Settings.GhostMode.DontReadStories", lang), enabled: SGSimpleSettings.shared.ghostModeEnabled))
     entries.append(.toggle(id: id.count, section: .ghostMode, settingName: .disableScreenshotNotification, value: SGSimpleSettings.shared.disableScreenshotNotification, text: i18n("Settings.GhostMode.DisableScreenshotNotification", lang), enabled: true))
     entries.append(.notice(id: id.count, section: .ghostMode, text: i18n("Settings.GhostMode.Notice", lang)))
+    
+    entries.append(.header(id: id.count, section: .messageFilters, text: i18n("Settings.MessageFilters.Header", lang), badge: nil))
+    entries.append(.action(id: id.count, section: .messageFilters, actionType: AnyHashable(SGSettingsAction.addMessageFilter), text: i18n("Settings.MessageFilters.Add", lang), kind: .generic))
+    // Reserve a fixed block of ids for the filter rows: entry ids double as sort
+    // keys, so letting the count vary would shift every id below this section.
+    let maxDisplayedMessageFilters = 64
+    var displayedMessageFilters = 0
+    for pattern in SGSimpleSettings.shared.messageFilterPatterns {
+        if displayedMessageFilters >= maxDisplayedMessageFilters {
+            break
+        }
+        entries.append(.action(id: id.count, section: .messageFilters, actionType: AnyHashable(SGSettingsAction.removeMessageFilter(pattern)), text: pattern, kind: .destructive))
+        displayedMessageFilters += 1
+    }
+    id.increment(maxDisplayedMessageFilters - displayedMessageFilters)
+    entries.append(.notice(id: id.count, section: .messageFilters, text: i18n("Settings.MessageFilters.Notice", lang)))
     
     if appConfiguration.sgWebSettings.global.canEditSettings {
         entries.append(.disclosure(id: id.count, section: .content, link: .contentSettings, text: i18n("Settings.ContentSettings", lang)))
@@ -337,6 +362,9 @@ private func SGControllerEntries(presentationData: PresentationData, callListSet
     entries.append(.toggle(id: id.count, section: .other, settingName: .hideSponsoredMessages, value: SGSimpleSettings.shared.hideSponsoredMessages, text: i18n("Settings.HideSponsoredMessages", lang), enabled: true))
     entries.append(.toggle(id: id.count, section: .other, settingName: .saveMessageEditHistory, value: SGSimpleSettings.shared.saveMessageEditHistory, text: i18n("Settings.SaveMessageEditHistory", lang), enabled: true))
     entries.append(.toggle(id: id.count, section: .other, settingName: .disableCopyProtection, value: SGSimpleSettings.shared.disableCopyProtection, text: i18n("Settings.DisableCopyProtection", lang), enabled: true))
+    entries.append(.toggle(id: id.count, section: .other, settingName: .keepLeftChats, value: SGSimpleSettings.shared.keepLeftChats, text: i18n("Settings.KeepLeftChats", lang), enabled: true))
+    entries.append(.toggle(id: id.count, section: .other, settingName: .localPremium, value: SGSimpleSettings.shared.localPremium, text: i18n("Settings.LocalPremium", lang), enabled: true))
+    entries.append(.notice(id: id.count, section: .other, text: i18n("Settings.LocalPremium.Notice", lang)))
     entries.append(.notice(id: id.count, section: .other, text: i18n("Settings.KeepDeletedMessages.Notice", lang)))
     entries.append(.toggle(id: id.count, section: .other, settingName: .disableSendAsButton, value: !SGSimpleSettings.shared.disableSendAsButton, text: i18n("Settings.SendAsButton", lang, strings.Conversation_SendMesageAs), enabled: true))
     entries.append(.toggle(id: id.count, section: .other, settingName: .disableGalleryCamera, value: !SGSimpleSettings.shared.disableGalleryCamera, text: i18n("Settings.GalleryCamera", lang), enabled: true))
@@ -466,6 +494,12 @@ public func sgSettingsController(context: AccountContext/*, focusOnItemTag: Int?
             SGSimpleSettings.shared.disableScreenshotNotification = value
         case .disableCopyProtection:
             SGSimpleSettings.shared.disableCopyProtection = value
+            askForRestart?()
+        case .keepLeftChats:
+            SGSimpleSettings.shared.keepLeftChats = value
+            askForRestart?()
+        case .localPremium:
+            SGSimpleSettings.shared.localPremium = value
             askForRestart?()
         case .showRepostToStory:
             SGSimpleSettings.shared.showRepostToStoryV2 = value
@@ -738,6 +772,36 @@ public func sgSettingsController(context: AccountContext/*, focusOnItemTag: Int?
                     }
                     strongContext.sharedContext.applicationBindings.openUrl(url)
                 })
+        }
+    }, action: { actionType in
+        // MARK: Swiftgram
+        guard let action = actionType.base as? SGSettingsAction else {
+            return
+        }
+        let presentationData = context.sharedContext.currentPresentationData.with { $0 }
+        switch action {
+        case .addMessageFilter:
+            presentControllerImpl?(promptController(
+                context: context,
+                text: i18n("Settings.MessageFilters.Add", presentationData.strings.baseLanguageCode),
+                subtitle: i18n("Settings.MessageFilters.Notice", presentationData.strings.baseLanguageCode),
+                value: nil,
+                placeholder: i18n("Settings.MessageFilters.Placeholder", presentationData.strings.baseLanguageCode),
+                apply: { value in
+                    guard let value = value?.trimmingCharacters(in: .whitespacesAndNewlines), !value.isEmpty else {
+                        return
+                    }
+                    var patterns = SGSimpleSettings.shared.messageFilterPatterns
+                    if !patterns.contains(value) {
+                        patterns.append(value)
+                        SGSimpleSettings.shared.messageFilterPatterns = patterns
+                    }
+                    simplePromise.set(true)
+                }
+            ), nil)
+        case let .removeMessageFilter(pattern):
+            SGSimpleSettings.shared.messageFilterPatterns = SGSimpleSettings.shared.messageFilterPatterns.filter({ $0 != pattern })
+            simplePromise.set(true)
         }
     }, searchInput: { searchQuery in
         updateState { state in

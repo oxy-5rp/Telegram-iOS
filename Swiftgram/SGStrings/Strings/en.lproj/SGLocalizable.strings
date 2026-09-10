@@ -292,3 +292,10 @@
 "ContextMenu.EditHistory" = "Edit History";
 "Settings.GhostMode.DisableScreenshotNotification" = "Don't Notify About Screenshots";
 "Settings.DisableCopyProtection" = "Ignore Copy Protection";
+"Settings.MessageFilters.Header" = "MESSAGE FILTERS";
+"Settings.MessageFilters.Add" = "Add Filter";
+"Settings.MessageFilters.Placeholder" = "Word or regular expression";
+"Settings.MessageFilters.Notice" = "Messages whose text matches any of these patterns are hidden from chats entirely. Plain words work as-is; anything more is treated as a regular expression. Tap a filter to remove it.";
+"Settings.KeepLeftChats" = "Keep Chats You Left";
+"Settings.LocalPremium" = "Local Premium";
+"Settings.LocalPremium.Notice" = "Unlocks the Premium limits and gates this app enforces on its own. Anything the server checks - upload size, saved GIFs, reactions - still follows your real account.";
